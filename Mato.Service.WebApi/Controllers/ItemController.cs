@@ -48,6 +48,28 @@ namespace Mato.Service.WebApi.Controllers
 
             return result;
         }
+        [HttpGet("Byname")]
+        public IActionResult Getitemname(string itemname)
+        {
+
+            var code = _dbContext.Itemdetails.FirstOrDefault(s => s.Itemname == itemname);
+            return Ok(code);
+
+        }
+        [HttpDelete("deleteitem")]
+        public JsonResult Deleteitem(string itemname)
+        {
+            var code = _dbContext.Itemdetails.FirstOrDefault(s => s.Itemname == itemname);
+
+            if (code != null)
+            {
+                _dbContext.Itemdetails.Remove(code);
+                _dbContext.SaveChanges();
+                return Json(new { message = "Item deleted successfully", item = code });
+            }
+
+            return Json(new { message = "Item not found" });
+        }
 
 
         [HttpPost("AddItem")]
@@ -71,5 +93,5 @@ namespace Mato.Service.WebApi.Controllers
 
 public class iteminfo
 {
-    public string name;
+    public string name { get; set; }
 }
