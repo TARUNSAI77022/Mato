@@ -10,13 +10,13 @@ namespace Mato.Service.WebApi.Controllers
     [Route("api/[controller]")]
     public class CouponAPIController : Controller
     {
-        private readonly  MisContext  _dbContext;
+        private readonly sampleContext _dbContext;
         private readonly IMapper _mapper;
         ResponseClass result = new ResponseClass();
         //private readonly ILogger<CouponAPIController> _logger;
         public CouponAPIController(IMapper mapper1)
         {
-            _dbContext =  new  MisContext(); 
+            _dbContext =  new sampleContext(); 
             _mapper = mapper1;  
           
         }
@@ -27,7 +27,8 @@ namespace Mato.Service.WebApi.Controllers
             try
             {
                 IEnumerable<Coupon> data = _dbContext.Coupons;
-                result.Res = _mapper.Map<IEnumerable<CouponDto>>(data); 
+               // result.Res = _mapper.Map<IEnumerable<CouponDto>>(data); 
+               result.Res = data;
                 result.responsemessage = "Data Received";
                 result.responsecode = 200;
                 return result;
@@ -72,23 +73,22 @@ namespace Mato.Service.WebApi.Controllers
             }
         }
         [HttpPost("CreateCoupon")]
-        public ResponseClass CreateCouponcode(Coupon coupon)
+        public ResponseClass CreateCouponcode(CouponDto couponDto)
         {
-            try
+            Coupon coupon = new Coupon
             {
-                var data = _dbContext.Coupons.Add(coupon);
-                result.responsemessage = "Coupon create";
-                result.responsecode = 200;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.responsemessage = ex.Message;
-                result.responsecode = 500;
-                result.Issuccess = false;
-                return result;
-            }
+                Couponcode = couponDto.CouponCode,
+                Discountamount = couponDto.DiscountAmount,
+                Minamount = couponDto.MinAmount
+            };
+            _dbContext.Coupons.Add(coupon);
+            _dbContext.SaveChanges();
 
+            result.responsemessage = "Coupon created";
+            result.responsecode = 200;
+            result.Issuccess = true;
+            return result;
         }
+
     }
 }

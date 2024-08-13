@@ -7,9 +7,9 @@ public partial class Coupon
 {
     public int Couponid { get; set; }
 
-    public string Couponcode { get; set; } = null!;
+    public string? Couponcode { get; set; }
 
-    public double Discountamount { get; set; }
+    public double? Discountamount { get; set; }
 
-    public int Minamount { get; set; }
+    public int? Minamount { get; set; }
 }
