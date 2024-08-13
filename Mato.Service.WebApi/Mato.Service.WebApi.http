@@ -1,0 +1,6 @@
+@Mato.Service.WebApi_HostAddress = http://localhost:5225
+
+GET {{Mato.Service.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

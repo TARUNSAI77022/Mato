@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{E63CBF32-1E72-486F-87FF-F89D08E4407C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{D1123914-9445-4C89-BB20-57B375328F1B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{504F918E-BEB6-4B2A-BC8F-78939428D018}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{770F6AF1-7333-41DC-A8B8-CE70D9A0C83D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mato.Service.WebApi", "Mato.Service.WebApi\Mato.Service.WebApi.csproj", "{4D05BAF1-2450-4198-81F1-7EC9CF375CE8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D05BAF1-2450-4198-81F1-7EC9CF375CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D05BAF1-2450-4198-81F1-7EC9CF375CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D05BAF1-2450-4198-81F1-7EC9CF375CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D05BAF1-2450-4198-81F1-7EC9CF375CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D05BAF1-2450-4198-81F1-7EC9CF375CE8} = {770F6AF1-7333-41DC-A8B8-CE70D9A0C83D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D12B98C-5099-4D13-91C2-2C1F2DE96557}
+	EndGlobalSection
+EndGlobal
