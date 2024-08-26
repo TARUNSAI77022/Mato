@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Mato.Service.WebApi.Controllers
 {
@@ -9,15 +8,22 @@ namespace Mato.Service.WebApi.Controllers
     {
         public IActionResult Index()
         {
-            // Get the first 100 prime numbers
-            List<int> primes = GetFirst100Primes();
+            try
+            {
+                // Get the first 100 prime numbers
+                List<int> primes = GetFirst100Primes();
 
-            // Calculate LCM and HCF
-            long lcm = CalculateLCM(primes);
-            int hcf = CalculateHCF(primes);
+                // Calculate LCM
+                long lcm = CalculateLCM(primes);
 
-            // Return the result as JSON
-            return Json(new { LCM = lcm, HCF = hcf });
+                // Return the LCM as JSON
+                return Json(new { LCM = lcm });
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur
+                return Json(new { Error = "An error occurred while calculating the LCM.", Details = ex.Message });
+            }
         }
 
         private List<int> GetFirst100Primes()
@@ -47,12 +53,12 @@ namespace Mato.Service.WebApi.Controllers
 
         private long CalculateLCM(List<int> numbers)
         {
-            return numbers.Aggregate((long)1, (x, y) => LCM(x, y));
-        }
-
-        private int CalculateHCF(List<int> numbers)
-        {
-            return numbers.Aggregate((x, y) => HCF(x, y));
+            long lcm = numbers[0];
+            for (int i = 1; i < numbers.Count; i++)
+            {
+                lcm = LCM(lcm, numbers[i]);
+            }
+            return lcm;
         }
 
         private long LCM(long a, long b)
