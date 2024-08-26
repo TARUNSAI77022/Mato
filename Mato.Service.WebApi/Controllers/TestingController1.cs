@@ -2,6 +2,9 @@
 using Mato.Service.WebApi.DTO;
 using Mato.Service.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Mato.Service.WebApi.Controllers
 {
@@ -9,14 +12,13 @@ namespace Mato.Service.WebApi.Controllers
     [Route("api/[controller]")]
     public class TestingController1 : Controller
     {
-
         private readonly sampleContext _dbContext;
         private readonly IMapper _mapper;
         ResponseClass result = new ResponseClass();
-        //private readonly ILogger<CouponAPIController> _logger;
-        public TestingController1(IMapper mapper1)
+
+        public TestingController1(IMapper mapper1, sampleContext dbContext)
         {
-            _dbContext = new sampleContext();
+            _dbContext = dbContext;
             _mapper = mapper1;
         }
 
@@ -41,16 +43,20 @@ namespace Mato.Service.WebApi.Controllers
         }
 
         [HttpGet("ById/{id:int}")]
-        public Coupon GetCouponsById(int id)
+        public IActionResult GetCouponsById(int id)
         {
             try
             {
                 var coupon = _dbContext.Coupons.FirstOrDefault(s => s.Couponid == id);
-                return coupon;
+                if (coupon == null)
+                {
+                    return NotFound(new { Message = "Coupon not found" });
+                }
+                return Ok(coupon);
             }
             catch (Exception ex)
             {
-                return null;
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
@@ -60,30 +66,131 @@ namespace Mato.Service.WebApi.Controllers
             try
             {
                 var code = _dbContext.Coupons.FirstOrDefault(s => s.Couponcode.ToLower() == CouponCode.ToLower());
+                if (code == null)
+                {
+                    return NotFound(new { Message = "Coupon code not found" });
+                }
                 return Ok(code);
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
         [HttpPost("CreateCoupon")]
         public ResponseClass CreateCouponcode(CouponDto couponDto)
         {
-            Coupon coupon = new Coupon
+            try
             {
-                Couponcode = couponDto.CouponCode,
-                Discountamount = couponDto.DiscountAmount,
-                Minamount = couponDto.MinAmount
-            };
-            _dbContext.Coupons.Add(coupon);
-            _dbContext.SaveChanges();
+                Coupon coupon = new Coupon
+                {
+                    Couponcode = couponDto.CouponCode,
+                    Discountamount = couponDto.DiscountAmount,
+                    Minamount = couponDto.MinAmount
+                };
+                _dbContext.Coupons.Add(coupon);
+                _dbContext.SaveChanges();
 
-            result.responsemessage = "Coupon created";
-            result.responsecode = 200;
-            result.Issuccess = true;
-            return result;
+                result.responsemessage = "Coupon created";
+                result.responsecode = 200;
+                result.Issuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.responsemessage = ex.Message;
+                result.responsecode = 500;
+                result.Issuccess = false;
+                return result;
+            }
+        }
+
+        [HttpPut("UpdateCoupon/{id:int}")]
+        public ResponseClass UpdateCoupon(int id, CouponDto couponDto)
+        {
+            try
+            {
+                var coupon = _dbContext.Coupons.FirstOrDefault(c => c.Couponid == id);
+                if (coupon == null)
+                {
+                    result.responsemessage = "Coupon not found";
+                    result.responsecode = 404;
+                    result.Issuccess = false;
+                    return result;
+                }
+
+                coupon.Couponcode = couponDto.CouponCode;
+                coupon.Discountamount = couponDto.DiscountAmount;
+                coupon.Minamount = couponDto.MinAmount;
+
+                _dbContext.Coupons.Update(coupon);
+                _dbContext.SaveChanges();
+
+                result.responsemessage = "Coupon updated successfully";
+                result.responsecode = 200;
+                result.Issuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.responsemessage = ex.Message;
+                result.responsecode = 500;
+                result.Issuccess = false;
+                return result;
+            }
+        }
+
+        [HttpDelete("DeleteCoupon/{id:int}")]
+        public ResponseClass DeleteCoupon(int id)
+        {
+            try
+            {
+                var coupon = _dbContext.Coupons.FirstOrDefault(c => c.Couponid == id);
+                if (coupon == null)
+                {
+                    result.responsemessage = "Coupon not found";
+                    result.responsecode = 404;
+                    result.Issuccess = false;
+                    return result;
+                }
+
+                _dbContext.Coupons.Remove(coupon);
+                _dbContext.SaveChanges();
+
+                result.responsemessage = "Coupon deleted successfully";
+                result.responsecode = 200;
+                result.Issuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.responsemessage = ex.Message;
+                result.responsecode = 500;
+                result.Issuccess = false;
+                return result;
+            }
+        }
+
+        [HttpGet("ByDiscountAmount/{amount:decimal}")]
+        public ResponseClass GetCouponsByDiscountAmount(decimal amount)
+        {
+            try
+            {
+                var coupons = _dbContext.Coupons.Where(c => c.Discountamount > amount).ToList();
+                result.Res = coupons;
+                result.responsemessage = "Coupons retrieved successfully";
+                result.responsecode = 200;
+                result.Issuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.responsemessage = ex.Message;
+                result.responsecode = 500;
+                result.Issuccess = false;
+                return result;
+            }
         }
 
         [HttpGet("GetPrimesUpTo500")]
@@ -124,6 +231,4 @@ namespace Mato.Service.WebApi.Controllers
             }
         }
     }
-
 }
-
